@@ -906,18 +906,70 @@ function drawQR(text) {
 
 // ─── CLIENT ───
 let ticketNum = 54;
+
 function getTicket() {
+
   const name = document.getElementById('client-name').value || 'Cliente';
+  const phone = document.getElementById('client-phone').value || '';
+
+  // enviar datos al webhook de n8n
+  fetch("https://n8n-production-16cd.up.railway.app/webhook/nuevo-turno", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      nombre: name,
+      telefono: phone,
+      turno: ticketNum,
+      negocio: "Carniceria Lopez"
+    })
+  })
+  .then(res => res.text())
+  .then(data => {
+    console.log("Webhook enviado:", data);
+  })
+  .catch(err => {
+    console.error("Error webhook:", err);
+  });
+
   document.getElementById('ticket-number').textContent = ticketNum;
   document.getElementById('ticket-client-name').textContent = name;
+
   document.getElementById('client-form-view').style.display = 'none';
   document.getElementById('client-ticket-view').style.display = 'block';
-  showToast('whatsapp', '📱 WhatsApp', `¡Listo! Tu turno es el ${ticketNum}. Te avisamos cuando falten 5 personas. Carnicería López 🥩`);
+
+  showToast(
+    'whatsapp',
+    '📱 WhatsApp',
+    `¡Listo! Tu turno es el ${ticketNum}. Te avisamos cuando falten 5 personas. Carnicería López 🥩`
+  );
 }
+
 function simulateNotif() {
-  showToast('whatsapp', '📱 WhatsApp · Carnicería López', '⚠️ Faltan 5 turnos para el tuyo. Andá yendo.');
-  setTimeout(()=>showToast('whatsapp','📱 WhatsApp · Carnicería López','🚨 Faltan 3 turnos. Tenés ~10 minutos para llegar.'),2500);
-  setTimeout(()=>showToast('whatsapp','📱 WhatsApp · Carnicería López','✅ ¡Es tu turno! Turno 54. Dirígite al mostrador.'),5000);
+
+  showToast(
+    'whatsapp',
+    '📱 WhatsApp · Carnicería López',
+    '⚠️ Faltan 5 turnos para el tuyo. Andá yendo.'
+  );
+
+  setTimeout(() =>
+    showToast(
+      'whatsapp',
+      '📱 WhatsApp · Carnicería López',
+      '🚨 Faltan 3 turnos. Tenés ~10 minutos para llegar.'
+    ), 2500
+  );
+
+  setTimeout(() =>
+    showToast(
+      'whatsapp',
+      '📱 WhatsApp · Carnicería López',
+      '✅ ¡Es tu turno! Turno 54. Dirígite al mostrador.'
+    ), 5000
+  );
+
 }
 
 // ─── DASHBOARD ───
