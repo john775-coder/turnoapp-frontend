@@ -466,6 +466,12 @@ async function siguienteTurno() {
   const turno = cola[0];
   document.getElementById('btn-siguiente').disabled = true;
   try {
+    // Notificar al 3ro de la cola
+    if (cola.length >= 3) {
+      fetch(`https://n8n-production-16cd.up.railway.app/webhook/393dc1d7-9b4e-48b4-8b13-15bf78c5b9eb?negocio_id=${negocioId}`, {
+        method: 'GET'
+      }).catch(e => console.log('Notif error:', e));
+    }
     await sbPatch('turnos', `id=eq.${turno.id}`, { estado: 'atendido' });
     await cargarDatos();
   } catch(e) {
