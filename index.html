@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TurnoYa — Sistema de Turnos sin Fila</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0a0f'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial Black,sans-serif' font-weight='900' font-size='36' fill='%2300e5a0'>T</text></svg>">
 <style>
 :root {
   --bg: #0a0a0f;
@@ -565,7 +566,68 @@ select option { background: var(--surface2); }
     <span class="tag">🔧 Talleres</span>
     <span class="tag">📋 Trámites municipales</span>
   </div>
+
+  <div class="divider"></div>
+
+  <!-- PRICING -->
+  <div style="text-align:center; margin-bottom:2rem;">
+    <div class="section-title">Planes y precios</div>
+    <p style="color:var(--muted); font-size:0.95rem;">Sin contratos. Cancelás cuando querés.</p>
+  </div>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:1.5rem; margin-bottom:4rem;">
+
+    <!-- BÁSICO -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:2rem; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:0.5rem;">Básico</div>
+      <div style="font-family:'Bricolage Grotesque',sans-serif; font-size:2.8rem; font-weight:800; line-height:1; margin-bottom:0.25rem;">$9 <span style="font-size:1rem; color:var(--muted); font-weight:400;">USD/mes</span></div>
+      <div style="color:var(--muted); font-size:0.85rem; margin-bottom:1.5rem;">Para negocios que están arrancando</div>
+      <ul style="list-style:none; display:flex; flex-direction:column; gap:0.6rem; margin-bottom:1.5rem;">
+        <li style="font-size:0.88rem; color:var(--muted); display:flex; align-items:center; gap:0.5rem;"><span style="color:var(--accent); font-weight:700;">✓</span> 1 local</li>
+        <li style="font-size:0.88rem; color:var(--muted); display:flex; align-items:center; gap:0.5rem;"><span style="color:var(--accent); font-weight:700;">✓</span> 200 turnos por mes</li>
+        <li style="font-size:0.88rem; color:var(--muted); display:flex; align-items:center; gap:0.5rem;"><span style="color:var(--accent); font-weight:700;">✓</span> QR imprimible</li>
+        <li style="font-size:0.88rem; color:var(--muted); display:flex; align-items:center; gap:0.5rem;"><span style="color:var(--accent); font-weight:700;">✓</span> Avisos por WhatsApp</li>
+        <li style="font-size:0.88rem; color:var(--muted); display:flex; align-items:center; gap:0.5rem;"><span style="color:var(--accent); font-weight:700;">✓</span> Panel de control</li>
+      </ul>
+      <button class="btn btn-outline" style="width:100%;" onclick="window.open('https://wa.me/5491122962183?text=Hola, quiero el plan Básico de TurnoYa')">Empezar ahora</button>
+    </div>
+
+    <!-- PRO -->
+    <div style="background:linear-gradient(135deg,rgba(0,229,160,0.05),var(--surface)); border:1px solid var(--accent); border-radius:20px; padding:2rem; position:relative;">
+      <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--accent); color:#000; font-size:0.7rem; font-weight:700; padding:0.25rem 0.75rem; border-radius:999px; text-transform:uppercase; letter-spacing:0.05em; white-space:nowrap;">MÁS POPULAR</div>
+      <div style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:0.5rem;">Pro</div>
+      <div style="font-family:'Bricolage Grotesque',sans-serif; font-size:2.8rem; font-weight:800; line-height:1; margin-bottom:0.25rem;">$19 <span style="font-size:1rem; color:var(--muted); font-weight:400;">USD/mes</span></div>
+      <div style="color:var(--muted); font-size:0.85rem; margin-bottom:1.5rem;">Para negocios que quieren crecer</div>
+      <ul style="list-style:none; display:flex; flex-direction:column; gap:0.6rem; margin-bottom:1.5rem;">
+        <li style="font-size:0.88rem; color:var(--muted); display:flex; align-items:center; gap:0.5rem;"><span style="color:var(--accent); font-weight:700;">✓</span> 1 local</li>
+        <li style="font-size:0.88rem; color:var(--muted); display:flex; align-items:center; gap:0.5rem;"><span style="color:var(--accent); font-weight:700;">✓</span> Turnos ilimitados</li>
+        <li style="font-size:0.88rem; color:var(--muted); display:flex; align-items:center; gap:0.5rem;"><span style="color:var(--accent); font-weight:700;">✓</span> QR imprimible</li>
+        <li style="font-size:0.88rem; color:var(--muted); display:flex; align-items:center; gap:0.5rem;"><span style="color:var(--accent); font-weight:700;">✓</span> Avisos por WhatsApp</li>
+        <li style="font-size:0.88rem; color:var(--muted); display:flex; align-items:center; gap:0.5rem;"><span style="color:var(--accent); font-weight:700;">✓</span> Estadísticas del día</li>
+        <li style="font-size:0.88rem; color:var(--muted); display:flex; align-items:center; gap:0.5rem;"><span style="color:var(--accent); font-weight:700;">✓</span> Branding propio</li>
+      </ul>
+      <button class="btn btn-primary" style="width:100%;" onclick="window.open('https://wa.me/5491122962183?text=Hola, quiero el plan Pro de TurnoYa')">Empezar ahora</button>
+    </div>
+
+    <!-- MULTI -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:2rem; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:0.5rem;">Multi-local</div>
+      <div style="font-family:'Bricolage Grotesque',sans-serif; font-size:2.8rem; font-weight:800; line-height:1; margin-bottom:0.25rem;">$39 <span style="font-size:1rem; color:var(--muted); font-weight:400;">USD/mes</span></div>
+      <div style="color:var(--muted); font-size:0.85rem; margin-bottom:1.5rem;">Para cadenas y franquicias</div>
+      <ul style="list-style:none; display:flex; flex-direction:column; gap:0.6rem; margin-bottom:1.5rem;">
+        <li style="font-size:0.88rem; color:var(--muted); display:flex; align-items:center; gap:0.5rem;"><span style="color:var(--accent); font-weight:700;">✓</span> Hasta 3 locales</li>
+        <li style="font-size:0.88rem; color:var(--muted); display:flex; align-items:center; gap:0.5rem;"><span style="color:var(--accent); font-weight:700;">✓</span> Turnos ilimitados</li>
+        <li style="font-size:0.88rem; color:var(--muted); display:flex; align-items:center; gap:0.5rem;"><span style="color:var(--accent); font-weight:700;">✓</span> Panel centralizado</li>
+        <li style="font-size:0.88rem; color:var(--muted); display:flex; align-items:center; gap:0.5rem;"><span style="color:var(--accent); font-weight:700;">✓</span> Avisos por WhatsApp</li>
+        <li style="font-size:0.88rem; color:var(--muted); display:flex; align-items:center; gap:0.5rem;"><span style="color:var(--accent); font-weight:700;">✓</span> Reportes avanzados</li>
+        <li style="font-size:0.88rem; color:var(--muted); display:flex; align-items:center; gap:0.5rem;"><span style="color:var(--accent); font-weight:700;">✓</span> Soporte prioritario</li>
+      </ul>
+      <button class="btn btn-outline" style="width:100%;" onclick="window.open('https://wa.me/5491122962183?text=Hola, quiero el plan Multi-local de TurnoYa')">Contactar</button>
+    </div>
+
+  </div>
 </div>
+</div>
+
 
 <!-- ════ REGISTER ════ -->
 <div class="screen" id="screen-register">
@@ -743,10 +805,59 @@ select option { background: var(--surface2); }
 
 </main>
 
+<!-- ════ FOOTER ════ -->
+<footer style="background:var(--surface); border-top:1px solid var(--border); padding:3rem 2rem 2rem; margin-top:2rem;">
+  <div style="max-width:1200px; margin:0 auto;">
+    <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:3rem; margin-bottom:2.5rem; flex-wrap:wrap;">
+      
+      <div>
+        <div style="font-family:'Bricolage Grotesque',sans-serif; font-size:1.4rem; font-weight:800; color:var(--accent); margin-bottom:0.75rem;">Turno<span style="color:var(--text);">Ya</span></div>
+        <p style="color:var(--muted); font-size:0.88rem; line-height:1.7; max-width:280px;">El sistema más simple para eliminar filas en negocios. Sin app, solo QR y WhatsApp.</p>
+        <div style="display:flex; gap:0.75rem; margin-top:1rem;">
+          <a href="#" style="width:36px; height:36px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; display:flex; align-items:center; justify-content:center; text-decoration:none; font-size:1rem; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">📱</a>
+          <a href="#" style="width:36px; height:36px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; display:flex; align-items:center; justify-content:center; text-decoration:none; font-size:1rem; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">💼</a>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-weight:600; margin-bottom:1rem; font-size:0.9rem;">Producto</div>
+        <div style="display:flex; flex-direction:column; gap:0.5rem;">
+          <a href="#" onclick="showScreen('home')" style="color:var(--muted); text-decoration:none; font-size:0.85rem; transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">Cómo funciona</a>
+          <a href="#" onclick="showScreen('register')" style="color:var(--muted); text-decoration:none; font-size:0.85rem; transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">Registrar negocio</a>
+          <a href="#" onclick="showScreen('client')" style="color:var(--muted); text-decoration:none; font-size:0.85rem; transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">Vista cliente</a>
+          <a href="#" onclick="showScreen('dashboard')" style="color:var(--muted); text-decoration:none; font-size:0.85rem; transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">Panel de control</a>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-weight:600; margin-bottom:1rem; font-size:0.9rem;">Contacto</div>
+        <div style="display:flex; flex-direction:column; gap:0.5rem;">
+          <a href="https://wa.me/5491122962183" style="color:var(--muted); text-decoration:none; font-size:0.85rem; transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">💬 WhatsApp</a>
+          <a href="#" style="color:var(--muted); text-decoration:none; font-size:0.85rem; transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">📋 Términos</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="height:1px; background:var(--border); margin-bottom:1.5rem;"></div>
+
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+      <div style="color:var(--muted); font-size:0.8rem;">© 2026 TurnoYa. Todos los derechos reservados.</div>
+      <div style="display:flex; align-items:center; gap:0.5rem;">
+        <span style="color:var(--muted); font-size:0.78rem;">Creado por</span>
+        <a href="#" style="font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:0.9rem; color:var(--accent); text-decoration:none; letter-spacing:-0.5px;">WhaLead</a>
+        <span style="color:var(--muted); font-size:0.78rem;">· Automatizaciones para negocios</span>
+        <span style="background:rgba(0,229,160,0.1); border:1px solid rgba(0,229,160,0.3); border-radius:999px; padding:0.15rem 0.6rem; font-size:0.7rem; color:var(--accent);">Primer sistema ✦</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
 <!-- ════ TOASTS ════ -->
 <div class="toast-container" id="toasts"></div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ─── NAV ───
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -795,28 +906,8 @@ function drawQR(text) {
 
 // ─── CLIENT ───
 let ticketNum = 54;
-async function getTicket() {
+function getTicket() {
   const name = document.getElementById('client-name').value || 'Cliente';
-  const phone = document.getElementById('client-phone').value;
-  
-  try {
-    await fetch('https://n8n-production-16cd.up.railway.app/webhook/nuevo-turno', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        negocio_id: 'b976fff8-6ab9-4cc6-8c9a-4f6c6f803f19',
-        negocio: 'Carnicería López',
-        nombre: name,
-        telefono: phone,
-        numero: ticketNum,
-        personas_delante: 13,
-        tiempo_estimado: 39
-      })
-    });
-  } catch(e) {
-    console.log('Error:', e)
-  }
-
   document.getElementById('ticket-number').textContent = ticketNum;
   document.getElementById('ticket-client-name').textContent = name;
   document.getElementById('client-form-view').style.display = 'none';
@@ -862,26 +953,12 @@ function renderQueue() {
   document.getElementById('served-count').textContent = served;
   document.getElementById('queue-count').textContent = queue.length;
 }
-async function nextTurn() {
+function nextTurn() {
   if(queue.length===0) return;
-  
-  try {
-    await fetch('https://n8n-production-16cd.up.railway.app/webhook/siguiente-turno', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        negocio_id: 'b976fff8-6ab9-4cc6-8c9a-4f6c6f803f19',
-        negocio: 'Carnicería López',
-        turno_actual: currentTurn
-      })
-    });
-  } catch(e) {
-    console.log('Error:', e)
-  }
-
   const removed = queue.shift();
   served++;
   currentTurn++;
+  // Update statuses
   queue.forEach((item,i)=>{
     if(i===0) item.status='current';
     else if(i<=2) item.status='near';
@@ -922,5 +999,30 @@ function showToast(type, app, msg) {
   setTimeout(()=>el.remove(),4500);
 }
 </script>
+
+<!-- ════ WHATSAPP FLOTANTE ════ -->
+<a href="https://wa.me/5491122962183?text=Hola, quiero saber más sobre TurnoYa" target="_blank"
+  style="position:fixed; bottom:2rem; right:2rem; z-index:999;
+    width:58px; height:58px;
+    background:#00e5a0;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 4px 20px rgba(0,229,160,0.4);
+    text-decoration:none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    animation: waPulse 2.5s ease-in-out infinite;"
+  onmouseover="this.style.transform='scale(1.1)';this.style.boxShadow='0 6px 28px rgba(0,229,160,0.6)'"
+  onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 20px rgba(0,229,160,0.4)'">
+  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#000">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+<style>
+@keyframes waPulse {
+  0%, 100% { box-shadow: 0 4px 20px rgba(0,229,160,0.4); }
+  50% { box-shadow: 0 4px 30px rgba(0,229,160,0.7), 0 0 0 8px rgba(0,229,160,0.1); }
+}
+</style>
+
 </body>
 </html>
