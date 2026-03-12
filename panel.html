@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TurnoYa — Panel de control</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Bricolage+Grotesque:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #111118;
+  --surface2: #1a1a26;
+  --border: #2a2a3a;
+  --accent: #00e5a0;
+  --text: #f0f0f8;
+  --muted: #6b6b88;
+  --danger: #ff4757;
+  --warning: #ffa502;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+header {
+  background: rgba(10,10,15,0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.logo {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+.logo span { color: var(--text); }
+.negocio-name {
+  font-size: 0.9rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+.badge-live {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.75rem;
+  background: rgba(0,229,160,0.08);
+  border: 1px solid rgba(0,229,160,0.2);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: var(--accent);
+}
+.dot-live {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.top-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.25rem;
+  text-align: center;
+}
+.stat-num {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+.stat-label { font-size: 0.78rem; color: var(--muted); }
+
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 1.5rem;
+}
+
+.current-section { text-align: center; }
+.turn-label { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+.turn-big {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 6rem;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+.turn-client { color: var(--muted); font-size: 0.95rem; margin-bottom: 1.25rem; }
+
+.btn-next {
+  width: 100%;
+  padding: 1rem;
+  background: var(--accent);
+  border: none;
+  border-radius: 12px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #000;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 0.6rem;
+}
+.btn-next:hover { background: #00c88a; transform: translateY(-2px); }
+.btn-next:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.btn-absent {
+  width: 100%;
+  padding: 0.7rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--muted);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-absent:hover { border-color: var(--danger); color: var(--danger); }
+
+.queue-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+.queue-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: 420px;
+  overflow-y: auto;
+}
+.queue-list::-webkit-scrollbar { display: none; }
+
+.q-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+.q-item.is-current { border-color: var(--accent); background: rgba(0,229,160,0.05); }
+.q-item.is-near { border-color: var(--warning); }
+.q-num { font-weight: 700; font-size: 1rem; min-width: 2.5rem; }
+.q-name { flex: 1; font-size: 0.88rem; }
+.q-phone { font-size: 0.75rem; color: var(--muted); }
+.q-badge {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+}
+.badge-now { background: rgba(0,229,160,0.15); color: var(--accent); }
+.badge-soon { background: rgba(255,165,2,0.15); color: var(--warning); }
+.badge-wait { background: rgba(107,107,136,0.15); color: var(--muted); }
+.q-del {
+  background: transparent;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.q-del:hover { background: var(--danger); color: white; }
+
+.empty {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.spinner {
+  width: 24px; height: 24px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 0.75rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Error / loading full page */
+.fullpage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  text-align: center;
+}
+.fullpage h2 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+}
+.fullpage p { color: var(--muted); font-size: 0.9rem; }
+
+@media (max-width: 600px) {
+  .grid { grid-template-columns: 1fr; }
+  .top-stats { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+  .turn-big { font-size: 4.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="app-loading" class="fullpage">
+  <div>
+    <div class="spinner" style="width:32px;height:32px;border-width:3px;"></div>
+    <p style="color:var(--muted);">Cargando panel...</p>
+  </div>
+</div>
+
+<div id="app-error" class="fullpage" style="display:none">
+  <div>
+    <div style="font-size:3rem;margin-bottom:1rem;">⚠️</div>
+    <h2>Panel no encontrado</h2>
+    <p>Este link no corresponde a ningún negocio activo.<br>Contactá a soporte por WhatsApp.</p>
+  </div>
+</div>
+
+<div id="app-main" style="display:none">
+  <header>
+    <div>
+      <div class="logo">Turno<span>Ya</span></div>
+      <div class="negocio-name" id="header-negocio">—</div>
+    </div>
+    <div class="badge-live">
+      <div class="dot-live"></div>
+      En vivo
+    </div>
+  </header>
+
+  <main>
+    <div class="top-stats">
+      <div class="stat-card">
+        <div class="stat-num" id="stat-atendidos">0</div>
+        <div class="stat-label">Atendidos hoy</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-espera">0</div>
+        <div class="stat-label">En espera</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-tiempo">0'</div>
+        <div class="stat-label">Tiempo est.</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- Turno actual -->
+      <div class="card current-section">
+        <div class="turn-label">Atendiendo ahora</div>
+        <div class="turn-big" id="turn-num">—</div>
+        <div class="turn-client" id="turn-client">Sin turnos</div>
+        <button class="btn-next" id="btn-siguiente" onclick="siguienteTurno()" disabled>
+          Siguiente turno ›
+        </button>
+        <button class="btn-absent" onclick="marcarAusente()">
+          Marcar ausente
+        </button>
+      </div>
+
+      <!-- Cola -->
+      <div class="card">
+        <div class="queue-title">Cola de espera</div>
+        <div class="queue-list" id="queue-list">
+          <div class="empty">
+            <div class="spinner"></div>
+            Cargando...
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+// ══════════════════════════════
+// CONFIGURACIÓN
+// ══════════════════════════════
+const SUPABASE_URL = 'https://truifyhmmtcddklxkfya.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRydWlmeWhtbXRjZGRrbHhrZnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NjQ4MTIsImV4cCI6MjA4ODI0MDgxMn0.ukDwDk4A5d5GBFzCjX41_cZZNSkutDZQcv0dJa-GvSc';
+const MINUTOS_POR_TURNO = 3;
+
+// ══════════════════════════════
+// HELPERS
+// ══════════════════════════════
+async function sbGet(table, params = '') {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params}`, {
+    headers: {
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+    }
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+async function sbPatch(table, params, body) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params}`, {
+    method: 'PATCH',
+    headers: {
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation'
+    },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+function getParam(name) {
+  return new URLSearchParams(window.location.search).get(name);
+}
+
+// ══════════════════════════════
+// STATE
+// ══════════════════════════════
+let negocioId = null;
+let cola = [];
+let refreshInterval = null;
+
+// ══════════════════════════════
+// INIT
+// ══════════════════════════════
+async function init() {
+  negocioId = getParam('negocio_id');
+  if (!negocioId) { showError(); return; }
+
+  try {
+    const negocios = await sbGet('negocios', `id=eq.${negocioId}`);
+    if (!negocios || negocios.length === 0) { showError(); return; }
+
+    document.getElementById('header-negocio').textContent = negocios[0].nombre;
+    document.title = `Panel · ${negocios[0].nombre}`;
+
+    document.getElementById('app-loading').style.display = 'none';
+    document.getElementById('app-main').style.display = 'block';
+
+    await cargarDatos();
+    refreshInterval = setInterval(cargarDatos, 8000);
+  } catch(e) {
+    console.error(e);
+    showError();
+  }
+}
+
+function showError() {
+  document.getElementById('app-loading').style.display = 'none';
+  document.getElementById('app-error').style.display = 'flex';
+}
+
+// ══════════════════════════════
+// CARGAR DATOS
+// ══════════════════════════════
+async function cargarDatos() {
+  try {
+    const hoy = new Date().toISOString().split('T')[0];
+
+    const [esperando, atendidos] = await Promise.all([
+      sbGet('turnos', `negocio_id=eq.${negocioId}&estado=eq.esperando&order=numero.asc`),
+      sbGet('turnos', `negocio_id=eq.${negocioId}&estado=eq.atendido&created_at=gte.${hoy}T00:00:00&select=numero`)
+    ]);
+
+    cola = esperando;
+    const totalAtendidos = atendidos.length;
+    const enEspera = esperando.length;
+    const tiempoEst = enEspera * MINUTOS_POR_TURNO;
+    const ultimoAtendido = atendidos.length > 0 ? Math.max(...atendidos.map(t => t.numero)) : '—';
+
+    // Stats
+    document.getElementById('stat-atendidos').textContent = totalAtendidos;
+    document.getElementById('stat-espera').textContent = enEspera;
+    document.getElementById('stat-tiempo').textContent = `${tiempoEst}'`;
+
+    // Turno actual
+    document.getElementById('turn-num').textContent = ultimoAtendido;
+
+    if (enEspera > 0) {
+      document.getElementById('turn-client').textContent = esperando[0].nombre_cliente;
+      document.getElementById('btn-siguiente').disabled = false;
+    } else {
+      document.getElementById('turn-client').textContent = 'Sin turnos en espera';
+      document.getElementById('btn-siguiente').disabled = true;
+    }
+
+    renderCola(esperando);
+  } catch(e) {
+    console.error('Error cargando datos:', e);
+  }
+}
+
+function renderCola(lista) {
+  const el = document.getElementById('queue-list');
+  if (lista.length === 0) {
+    el.innerHTML = '<div class="empty">🎉 No hay turnos en espera</div>';
+    return;
+  }
+  el.innerHTML = lista.map((t, i) => {
+    const cls = i === 0 ? 'is-current' : i <= 2 ? 'is-near' : '';
+    const badge = i === 0 ? '<span class="q-badge badge-now">Ahora</span>' :
+                  i <= 2  ? '<span class="q-badge badge-soon">Pronto</span>' :
+                             '<span class="q-badge badge-wait">Espera</span>';
+    const del = i > 0 ? `<button class="q-del" onclick="marcarAusenteId('${t.id}', ${t.numero})">Ausente</button>` : '';
+    return `
+      <div class="q-item ${cls}">
+        <span class="q-num">#${t.numero}</span>
+        <div style="flex:1;min-width:0;">
+          <div class="q-name">${t.nombre_cliente}</div>
+          <div class="q-phone">${t.telefono_cliente || ''}</div>
+        </div>
+        ${badge}
+        ${del}
+      </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════
+// ACCIONES
+// ══════════════════════════════
+async function siguienteTurno() {
+  if (cola.length === 0) return;
+  const turno = cola[0];
+  document.getElementById('btn-siguiente').disabled = true;
+  try {
+    await sbPatch('turnos', `id=eq.${turno.id}`, { estado: 'atendido' });
+    await cargarDatos();
+  } catch(e) {
+    console.error(e);
+    alert('Error al actualizar el turno.');
+    document.getElementById('btn-siguiente').disabled = false;
+  }
+}
+
+async function marcarAusente() {
+  if (cola.length === 0) return;
+  const turno = cola[0];
+  await marcarAusenteId(turno.id, turno.numero);
+}
+
+async function marcarAusenteId(id, numero) {
+  try {
+    await sbPatch('turnos', `id=eq.${id}`, { estado: 'ausente' });
+    await cargarDatos();
+  } catch(e) {
+    console.error(e);
+    alert('Error al marcar ausente.');
+  }
+}
+
+init();
+</script>
+</body>
+</html>

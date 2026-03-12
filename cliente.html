@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TurnoYa — Sacar turno</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Bricolage+Grotesque:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #111118;
+  --surface2: #1a1a26;
+  --border: #2a2a3a;
+  --accent: #00e5a0;
+  --accent2: #7c4dff;
+  --text: #f0f0f8;
+  --muted: #6b6b88;
+  --danger: #ff4757;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+.container { width: 100%; max-width: 420px; }
+
+.logo {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1.3rem; font-weight: 800;
+  color: var(--accent);
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.logo span { color: var(--text); }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem;
+}
+
+.negocio-header {
+  text-align: center;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+.negocio-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: rgba(124,77,255,0.15);
+  border: 1px solid rgba(124,77,255,0.3);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: var(--accent2);
+  margin-bottom: 0.75rem;
+}
+.negocio-nombre {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+}
+.negocio-dir { color: var(--muted); font-size: 0.85rem; }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+.stat {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.85rem 0.5rem;
+  text-align: center;
+}
+.stat-num {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 0.2rem;
+}
+.stat-label { font-size: 0.7rem; color: var(--muted); }
+
+.form-group { margin-bottom: 1rem; }
+label {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.4rem;
+}
+input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+input:focus { outline: none; border-color: var(--accent); }
+
+.btn {
+  width: 100%;
+  padding: 1rem;
+  background: var(--accent);
+  border: none;
+  border-radius: 12px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #000;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 0.5rem;
+}
+.btn:hover { background: #00c88a; transform: translateY(-1px); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.hint {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin-top: 0.75rem;
+  line-height: 1.5;
+}
+
+/* Ticket view */
+.ticket {
+  background: linear-gradient(135deg, #111118 0%, #1a1a2e 100%);
+  border: 2px solid var(--accent);
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+.ticket::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(0,229,160,0.06) 0%, transparent 60%);
+}
+.ticket-label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+.ticket-num {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 6rem;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  margin: 0.25rem 0;
+  position: relative;
+}
+.ticket-name { font-size: 1rem; font-weight: 600; color: var(--muted); }
+
+.info-box {
+  background: rgba(0,229,160,0.05);
+  border: 1px solid rgba(0,229,160,0.2);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+}
+.info-box p { font-size: 0.88rem; color: var(--accent); font-weight: 600; margin-bottom: 0.3rem; }
+.info-box small { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+/* Error state */
+.error-box {
+  text-align: center;
+  padding: 2rem;
+}
+.error-box h2 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.5rem; margin-bottom: 0.5rem; }
+.error-box p { color: var(--muted); font-size: 0.9rem; }
+
+/* Loading */
+.loading {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: var(--muted);
+}
+.spinner {
+  width: 32px; height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 1rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="logo">Turno<span>Ya</span></div>
+
+  <div class="card" id="card-loading">
+    <div class="loading">
+      <div class="spinner"></div>
+      Cargando...
+    </div>
+  </div>
+
+  <div class="card" id="card-error" style="display:none">
+    <div class="error-box">
+      <div style="font-size:3rem;margin-bottom:1rem;">⚠️</div>
+      <h2>QR inválido</h2>
+      <p>Este QR no corresponde a ningún negocio activo. Pedile al negocio que te dé el QR correcto.</p>
+    </div>
+  </div>
+
+  <div id="card-form" style="display:none">
+    <div class="card">
+      <div class="negocio-header">
+        <div class="negocio-badge" id="negocio-tipo">🏪 Negocio</div>
+        <div class="negocio-nombre" id="negocio-nombre">Cargando...</div>
+        <div class="negocio-dir" id="negocio-dir"></div>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-num" id="stat-actual">—</div>
+          <div class="stat-label">Turno actual</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="stat-fila">—</div>
+          <div class="stat-label">En fila</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="stat-espera">—</div>
+          <div class="stat-label">Espera</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Tu nombre</label>
+        <input type="text" id="input-nombre" placeholder="Juan García" autocomplete="name">
+      </div>
+      <div class="form-group">
+        <label>Tu WhatsApp</label>
+        <input type="tel" id="input-telefono" placeholder="+549 11 9999-8888" autocomplete="tel">
+      </div>
+      <button class="btn" id="btn-turno" onclick="obtenerTurno()">📋 Obtener mi turno</button>
+      <p class="hint">Te avisamos por WhatsApp cuando sea tu turno. Podés irte tranquilo.</p>
+    </div>
+  </div>
+
+  <div id="card-ticket" style="display:none">
+    <div class="ticket">
+      <div class="ticket-label">Tu turno</div>
+      <div class="ticket-num" id="ticket-num">—</div>
+      <div class="ticket-name" id="ticket-name">—</div>
+    </div>
+    <div class="card" style="margin-top:0;">
+      <div class="stats" style="margin-bottom:1rem;">
+        <div class="stat">
+          <div class="stat-num" id="ticket-actual">—</div>
+          <div class="stat-label">Turno actual</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="ticket-delante">—</div>
+          <div class="stat-label">Delante tuyo</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="ticket-tiempo">—</div>
+          <div class="stat-label">Tiempo est.</div>
+        </div>
+      </div>
+      <div class="info-box">
+        <p>📱 Te avisamos por WhatsApp</p>
+        <small>Cuando falten 3 turnos y cuando sea el tuyo. Podés irte tranquilo.</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════
+// CONFIGURACIÓN
+// ══════════════════════════════
+const SUPABASE_URL = 'https://truifyhmmtcddklxkfya.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRydWlmeWhtbXRjZGRrbHhrZnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NjQ4MTIsImV4cCI6MjA4ODI0MDgxMn0.ukDwDk4A5d5GBFzCjX41_cZZNSkutDZQcv0dJa-GvSc';
+const WEBHOOK_URL = 'https://n8n-production-16cd.up.railway.app/webhook/nuevo-turno';
+const MINUTOS_POR_TURNO = 3;
+
+// ══════════════════════════════
+// HELPERS
+// ══════════════════════════════
+async function sbGet(table, params = '') {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params}`, {
+    headers: {
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+    }
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+function getParam(name) {
+  return new URLSearchParams(window.location.search).get(name);
+}
+
+// ══════════════════════════════
+// INIT
+// ══════════════════════════════
+let negocioId = null;
+let negocioData = null;
+
+async function init() {
+  negocioId = getParam('negocio_id');
+  if (!negocioId) { showError(); return; }
+
+  try {
+    const negocios = await sbGet('negocios', `id=eq.${negocioId}`);
+    if (!negocios || negocios.length === 0) { showError(); return; }
+    negocioData = negocios[0];
+
+    // Mostrar datos del negocio
+    document.getElementById('negocio-nombre').textContent = negocioData.nombre;
+    document.getElementById('negocio-tipo').textContent = negocioData.tipo || '🏪 Negocio';
+    document.getElementById('negocio-dir').textContent = negocioData.direccion || '';
+
+    await loadStats();
+
+    document.getElementById('card-loading').style.display = 'none';
+    document.getElementById('card-form').style.display = 'block';
+  } catch(e) {
+    console.error(e);
+    showError();
+  }
+}
+
+async function loadStats() {
+  try {
+    const esperando = await sbGet('turnos',
+      `negocio_id=eq.${negocioId}&estado=eq.esperando&select=numero&order=numero.asc`
+    );
+    const atendidos = await sbGet('turnos',
+      `negocio_id=eq.${negocioId}&estado=eq.atendido&select=numero`
+    );
+    const enFila = esperando.length;
+    const actual = atendidos.length > 0 ? Math.max(...atendidos.map(t => t.numero)) : '—';
+
+    document.getElementById('stat-actual').textContent = actual;
+    document.getElementById('stat-fila').textContent = enFila;
+    document.getElementById('stat-espera').textContent = enFila > 0 ? `~${enFila * MINUTOS_POR_TURNO}'` : "0'";
+
+    return { enFila, actual };
+  } catch(e) {
+    console.error(e);
+    return { enFila: 0, actual: '—' };
+  }
+}
+
+function showError() {
+  document.getElementById('card-loading').style.display = 'none';
+  document.getElementById('card-error').style.display = 'block';
+}
+
+// ══════════════════════════════
+// OBTENER TURNO
+// ══════════════════════════════
+async function obtenerTurno() {
+  const nombre = document.getElementById('input-nombre').value.trim();
+  const telefono = document.getElementById('input-telefono').value.trim();
+
+  if (!nombre || !telefono) {
+    alert('Completá tu nombre y WhatsApp.');
+    return;
+  }
+
+  const btn = document.getElementById('btn-turno');
+  btn.disabled = true;
+  btn.textContent = 'Procesando...';
+
+  try {
+    const { enFila, actual } = await loadStats();
+    const telefonoClean = '549' + telefono.replace(/\D/g, '').slice(-9);
+    const tiempoEstimado = (enFila + 1) * MINUTOS_POR_TURNO;
+
+    await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombre,
+        telefono: telefonoClean,
+        turno: 0,
+        negocio_id: negocioId,
+        personas_delante: enFila,
+        tiempo_estimado: tiempoEstimado
+      })
+    });
+
+    // Esperar que n8n guarde el turno
+    await new Promise(r => setTimeout(r, 1000));
+
+    // Buscar el turno recién creado
+    const nuevos = await sbGet('turnos',
+      `negocio_id=eq.${negocioId}&nombre_cliente=eq.${encodeURIComponent(nombre)}&order=created_at.desc&limit=1`
+    );
+    const miTurno = nuevos[0]?.numero || '?';
+
+    // Mostrar ticket
+    document.getElementById('ticket-num').textContent = miTurno;
+    document.getElementById('ticket-name').textContent = nombre;
+    document.getElementById('ticket-actual').textContent = actual;
+    document.getElementById('ticket-delante').textContent = enFila;
+    document.getElementById('ticket-tiempo').textContent = tiempoEstimado > 0 ? `~${tiempoEstimado}'` : "< 1'";
+
+    document.getElementById('card-form').style.display = 'none';
+    document.getElementById('card-ticket').style.display = 'block';
+
+  } catch(e) {
+    console.error(e);
+    alert('Error al obtener el turno. Intentá de nuevo.');
+    btn.disabled = false;
+    btn.textContent = '📋 Obtener mi turno';
+  }
+}
+
+init();
+</script>
+</body>
+</html>
