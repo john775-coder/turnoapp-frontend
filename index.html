@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TurnoYa — Sistema de Turnos sin Fila</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #111118;
+  --surface2: #1a1a26;
+  --border: #2a2a3a;
+  --accent: #00e5a0;
+  --accent2: #7c4dff;
+  --accent3: #ff6b35;
+  --text: #f0f0f8;
+  --muted: #6b6b88;
+  --danger: #ff4757;
+  --warning: #ffa502;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 2rem;
+  background: rgba(10,10,15,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.logo {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1.4rem; font-weight: 800;
+  color: var(--accent);
+  letter-spacing: -0.5px;
+}
+.logo span { color: var(--text); }
+.nav-tabs { display: flex; gap: 0.5rem; }
+.tab {
+  padding: 0.45rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tab.active, .tab:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+  font-weight: 600;
+}
+
+/* ─── MAIN LAYOUT ─── */
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 6rem 2rem 3rem;
+}
+
+/* ─── SCREENS ─── */
+.screen { display: none; animation: fadeIn 0.3s ease; }
+.screen.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* ─── HERO ─── */
+.hero {
+  text-align: center;
+  padding: 4rem 0 3rem;
+}
+.hero-badge {
+  display: inline-block;
+  padding: 0.35rem 1rem;
+  background: rgba(0,229,160,0.12);
+  border: 1px solid rgba(0,229,160,0.3);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+.hero h1 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  margin-bottom: 1rem;
+  letter-spacing: -2px;
+}
+.hero h1 em {
+  font-style: normal;
+  color: var(--accent);
+}
+.hero p {
+  color: var(--muted);
+  font-size: 1.15rem;
+  max-width: 520px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.6;
+}
+.cta-row { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.btn {
+  padding: 0.9rem 2rem;
+  border-radius: 12px;
+  border: none;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-primary {
+  background: var(--accent);
+  color: #000;
+}
+.btn-primary:hover { background: #00c88a; transform: translateY(-1px); }
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ─── HOW IT WORKS ─── */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin: 4rem 0;
+}
+.step {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  position: relative;
+  transition: border-color 0.2s;
+}
+.step:hover { border-color: var(--accent); }
+.step-num {
+  font-size: 2.5rem;
+  font-weight: 800;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  color: var(--accent);
+  opacity: 0.3;
+  line-height: 1;
+  margin-bottom: 0.75rem;
+}
+.step h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.4rem; }
+.step p { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+.step-icon { font-size: 1.8rem; margin-bottom: 0.75rem; }
+
+/* ─── REGISTER SCREEN ─── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+.card-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+.card-sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.75rem; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.form-group.full { grid-column: 1 / -1; }
+label { font-size: 0.8rem; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+input, select {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+select option { background: var(--surface2); }
+
+/* ─── QR SUCCESS ─── */
+.success-box {
+  text-align: center;
+  padding: 3rem 2rem;
+}
+.qr-container {
+  display: inline-block;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 16px;
+  margin: 1.5rem 0;
+  position: relative;
+}
+.qr-grid {
+  width: 160px; height: 160px;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 2px;
+}
+.qr-cell {
+  border-radius: 2px;
+  background: #111;
+}
+.qr-cell.white { background: white; }
+.url-chip {
+  display: inline-block;
+  padding: 0.6rem 1.5rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.9rem;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+.pulse-ring {
+  position: absolute;
+  inset: -8px;
+  border-radius: 20px;
+  border: 2px solid var(--accent);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.2; transform: scale(1.03); }
+}
+
+/* ─── CLIENT SCREEN ─── */
+.client-header {
+  text-align: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+.client-header h2 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+.client-header .type-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: rgba(124,77,255,0.15);
+  border: 1px solid rgba(124,77,255,0.3);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: var(--accent2);
+  margin-bottom: 0.75rem;
+}
+.queue-status {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.stat-box {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+}
+.stat-num {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+.stat-label { font-size: 0.75rem; color: var(--muted); }
+
+/* ─── TICKET ─── */
+.ticket {
+  background: linear-gradient(135deg, #111118 0%, #1a1a2e 100%);
+  border: 1px solid var(--accent);
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.ticket::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(0,229,160,0.05) 0%, transparent 60%);
+}
+.ticket-num {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 5rem;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  margin: 0.5rem 0;
+  position: relative;
+}
+.ticket-label { font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+.ticket-name { font-size: 1.1rem; font-weight: 600; margin-top: 1rem; }
+
+/* ─── DASHBOARD ─── */
+.dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.current-turn {
+  text-align: center;
+  padding: 2rem;
+}
+.turn-display {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 7rem;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  margin: 1rem 0;
+}
+.turn-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.btn-next {
+  width: 100%;
+  padding: 1.1rem;
+  background: var(--accent);
+  border: none;
+  border-radius: 14px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #000;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+}
+.btn-next:hover { background: #00c88a; transform: translateY(-2px); }
+.btn-next:active { transform: translateY(0); }
+
+.queue-list { display: flex; flex-direction: column; gap: 0.5rem; max-height: 400px; overflow-y: auto; }
+.queue-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.85rem 1rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+.queue-item.current {
+  border-color: var(--accent);
+  background: rgba(0,229,160,0.05);
+}
+.queue-item.near { border-color: var(--warning); }
+.item-num { font-weight: 700; font-size: 1.1rem; width: 3rem; }
+.item-name { flex: 1; font-size: 0.9rem; }
+.item-status {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+.status-current { background: rgba(0,229,160,0.15); color: var(--accent); }
+.status-near { background: rgba(255,165,2,0.15); color: var(--warning); }
+.status-wait { background: rgba(107,107,136,0.15); color: var(--muted); }
+.btn-absent {
+  background: transparent;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  transition: all 0.2s;
+}
+.btn-absent:hover { background: var(--danger); color: white; }
+
+/* ─── NOTIFICATION TOAST ─── */
+.toast-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 999; display: flex; flex-direction: column; gap: 0.75rem; }
+.toast {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  min-width: 280px;
+  animation: slideIn 0.3s ease;
+  position: relative;
+}
+.toast.whatsapp { border-left: 3px solid #25d366; }
+.toast.sms { border-left: 3px solid var(--accent2); }
+.toast-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem; }
+.toast-icon { font-size: 1rem; }
+.toast-app { font-size: 0.75rem; font-weight: 600; color: var(--muted); text-transform: uppercase; }
+.toast-msg { font-size: 0.9rem; line-height: 1.4; }
+.toast-close {
+  position: absolute; top: 0.5rem; right: 0.75rem;
+  background: none; border: none; color: var(--muted);
+  cursor: pointer; font-size: 1rem;
+}
+@keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: none; } }
+
+/* ─── PRICING ─── */
+.pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+.plan {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem;
+  position: relative;
+  transition: all 0.2s;
+}
+.plan:hover { border-color: var(--accent); transform: translateY(-3px); }
+.plan.featured {
+  border-color: var(--accent);
+  background: linear-gradient(135deg, rgba(0,229,160,0.05), var(--surface));
+}
+.plan-badge {
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: var(--accent); color: #000;
+  font-size: 0.7rem; font-weight: 700;
+  padding: 0.25rem 0.75rem; border-radius: 999px;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.plan-name { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.5rem; }
+.plan-price {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+.plan-price span { font-size: 1rem; color: var(--muted); font-weight: 400; }
+.plan-features { list-style: none; margin: 1.25rem 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.plan-features li { font-size: 0.88rem; color: var(--muted); display: flex; align-items: center; gap: 0.5rem; }
+.plan-features li::before { content: '✓'; color: var(--accent); font-weight: 700; }
+
+
+
+/* ─── MISC ─── */
+.section-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1.8rem; font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.section-sub { color: var(--muted); margin-bottom: 2rem; font-size: 0.95rem; }
+.divider { height: 1px; background: var(--border); margin: 3rem 0; }
+.tag-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
+.tag {
+  padding: 0.3rem 0.75rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.highlight { color: var(--accent); }
+.success-icon { font-size: 3rem; margin-bottom: 1rem; }
+.scrollbar-hidden::-webkit-scrollbar { display: none; }
+@media (max-width: 600px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .dash-grid { grid-template-columns: 1fr; }
+  .arch { grid-template-columns: 1fr; }
+  .arch-arrow { transform: rotate(90deg); }
+  nav { padding: 0.75rem 1rem; }
+  .nav-tabs .tab { padding: 0.4rem 0.7rem; font-size: 0.78rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Turno<span>Ya</span></div>
+  <div class="nav-tabs">
+    <button class="tab active" onclick="showScreen('home')">Inicio</button>
+    <button class="tab" onclick="showScreen('register')">Negocio</button>
+    <button class="tab" onclick="showScreen('client')">Cliente</button>
+    <button class="tab" onclick="showScreen('dashboard')">Panel</button>
+
+  </div>
+</nav>
+
+<main>
+
+<!-- ════ HOME ════ -->
+<div class="screen active" id="screen-home">
+  <div class="hero">
+    <div class="hero-badge">🇦🇷 Hecho para negocios argentinos</div>
+    <h1>Fin a las filas.<br><em>Turnos sin app.</em></h1>
+    <p>Tu cliente escanea un QR, se va a hacer otra cosa, y vuelve cuando es su turno. Solo WhatsApp. Sin descargas.</p>
+    <div class="cta-row">
+      <button class="btn btn-primary" onclick="showScreen('register')">Registrar mi negocio</button>
+      <button class="btn btn-outline" onclick="showScreen('client')">Ver como cliente</button>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-icon">🏪</div>
+      <div class="step-num">01</div>
+      <h3>El negocio se registra</h3>
+      <p>Crea su perfil en 2 minutos. El sistema genera un QR único automáticamente.</p>
+    </div>
+    <div class="step">
+      <div class="step-icon">🖨️</div>
+      <div class="step-num">02</div>
+      <h3>Imprime y pega el QR</h3>
+      <p>Lo pega en la puerta o mostrador. Sin hardware especial, sin instalaciones.</p>
+    </div>
+    <div class="step">
+      <div class="step-icon">📱</div>
+      <div class="step-num">03</div>
+      <h3>Cliente escanea</h3>
+      <p>Abre el navegador. Ingresa nombre y celular. Obtiene su turno en 20 segundos.</p>
+    </div>
+    <div class="step">
+      <div class="step-icon">🚶</div>
+      <div class="step-num">04</div>
+      <h3>El cliente se va</h3>
+      <p>Puede ir a otro negocio, tomar un café, lo que quiera. La fila virtual lo espera.</p>
+    </div>
+    <div class="step">
+      <div class="step-icon">📩</div>
+      <div class="step-num">05</div>
+      <h3>Recibe aviso por WhatsApp</h3>
+      <p>"Faltan 3 personas. Tenés 15 minutos para llegar." Automatizado, sin intervención.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <p class="section-sub" style="text-align:center; font-size:1rem;">¿Quién lo necesita?</p>
+  <div class="tag-row" style="justify-content:center;">
+    <span class="tag">🥩 Carnicerías</span>
+    <span class="tag">💊 Farmacias</span>
+    <span class="tag">🏥 Consultorios</span>
+    <span class="tag">💇 Peluquerías</span>
+    <span class="tag">🍕 Pizzerías</span>
+    <span class="tag">🏦 Bancos</span>
+    <span class="tag">🥐 Panaderías</span>
+    <span class="tag">🔧 Talleres</span>
+    <span class="tag">📋 Trámites municipales</span>
+  </div>
+</div>
+
+<!-- ════ REGISTER ════ -->
+<div class="screen" id="screen-register">
+  <div id="register-form-view">
+    <div class="card">
+      <div class="card-title">Registrar negocio</div>
+      <div class="card-sub">En 2 minutos tu QR está listo para imprimir.</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nombre del negocio</label>
+          <input type="text" id="biz-name" placeholder="Carnicería López" value="Carnicería López">
+        </div>
+        <div class="form-group">
+          <label>Tipo de negocio</label>
+          <select id="biz-type">
+            <option>Carnicería</option>
+            <option>Farmacia</option>
+            <option>Peluquería</option>
+            <option>Consultorio</option>
+            <option>Panadería</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Nombre del dueño</label>
+          <input type="text" placeholder="Jorge López">
+        </div>
+        <div class="form-group">
+          <label>WhatsApp del negocio</label>
+          <input type="text" placeholder="+54 11 1234-5678">
+        </div>
+        <div class="form-group">
+          <label>Dirección</label>
+          <input type="text" placeholder="Av. Corrientes 1234, Buenos Aires" style="">
+        </div>
+        <div class="form-group">
+          <label>Tiempo prom. por cliente (min)</label>
+          <input type="number" value="3" min="1" max="60">
+        </div>
+      </div>
+      <button class="btn btn-primary" style="margin-top:1.5rem; width:100%; padding:1rem;" onclick="generateQR()">
+        ✦ Generar mi QR gratuito
+      </button>
+    </div>
+  </div>
+
+  <div id="register-success-view" style="display:none">
+    <div class="card success-box">
+      <div class="success-icon">🎉</div>
+      <div class="card-title">¡Tu QR está listo!</div>
+      <p style="color:var(--muted); margin:0.5rem 0 1.5rem;">Imprimí esto y pegalo en tu negocio.</p>
+      <div class="url-chip" id="biz-url">turno.ya/carniceria-lopez</div>
+      <div class="qr-container">
+        <div class="pulse-ring"></div>
+        <canvas id="qr-canvas" width="160" height="160"></canvas>
+      </div>
+      <p style="color:var(--muted); font-size:0.85rem; margin-bottom:1.5rem;">Escanealo para ver la vista del cliente ↓</p>
+      <div class="cta-row">
+        <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir QR</button>
+        <button class="btn btn-outline" onclick="showScreen('dashboard')">Ver mi panel →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ CLIENT ════ -->
+<div class="screen" id="screen-client">
+  <div id="client-form-view">
+    <div class="card">
+      <div class="client-header">
+        <div class="type-badge">🥩 Carnicería</div>
+        <h2>Carnicería López</h2>
+        <p style="color:var(--muted); font-size:0.9rem; margin-top:0.25rem;">Av. Corrientes 1234 · Abierto ahora</p>
+      </div>
+      <div class="queue-status">
+        <div class="stat-box">
+          <div class="stat-num">41</div>
+          <div class="stat-label">Turno actual</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">12</div>
+          <div class="stat-label">En fila</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">~35'</div>
+          <div class="stat-label">Espera estimada</div>
+        </div>
+      </div>
+      <div class="form-grid" style="grid-template-columns:1fr;">
+        <div class="form-group">
+          <label>Tu nombre</label>
+          <input type="text" id="client-name" placeholder="Juan García" value="Juan García">
+        </div>
+        <div class="form-group">
+          <label>Tu WhatsApp (para avisarte)</label>
+          <input type="tel" id="client-phone" placeholder="+54 11 9999-8888" value="+54 11 9999-8888">
+        </div>
+      </div>
+      <button class="btn btn-primary" style="margin-top:1.25rem; width:100%; padding:1rem;" onclick="getTicket()">
+        📋 Obtener mi turno
+      </button>
+      <p style="text-align:center; color:var(--muted); font-size:0.8rem; margin-top:0.75rem;">
+        Te avisamos por WhatsApp cuando estés cerca. Podés irte tranquilo.
+      </p>
+    </div>
+  </div>
+
+  <div id="client-ticket-view" style="display:none">
+    <div class="card">
+      <div class="client-header">
+        <div class="type-badge">✅ Turno confirmado</div>
+        <h2>¡Ya estás en la fila!</h2>
+      </div>
+      <div class="ticket">
+        <div class="ticket-label">Tu turno</div>
+        <div class="ticket-num" id="ticket-number">54</div>
+        <div class="ticket-name" id="ticket-client-name">Juan García</div>
+      </div>
+      <div class="queue-status" style="margin-top:1.25rem;">
+        <div class="stat-box">
+          <div class="stat-num">41</div>
+          <div class="stat-label">Turno actual</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="ticket-ahead">13</div>
+          <div class="stat-label">Delante tuyo</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="ticket-time">~39'</div>
+          <div class="stat-label">Tiempo estimado</div>
+        </div>
+      </div>
+      <div style="background:rgba(0,229,160,0.05); border:1px solid rgba(0,229,160,0.2); border-radius:12px; padding:1rem; margin-top:1rem; text-align:center;">
+        <p style="font-size:0.9rem; color:var(--accent); font-weight:600;">📱 Te avisamos por WhatsApp</p>
+        <p style="font-size:0.82rem; color:var(--muted); margin-top:0.3rem;">Cuando falten 5 turnos y cuando sea el tuyo. Podés irte tranquilo.</p>
+      </div>
+      <button class="btn btn-outline" style="width:100%; margin-top:1rem;" onclick="simulateNotif()">
+        Simular: "Te llega el aviso" →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ DASHBOARD ════ -->
+<div class="screen" id="screen-dashboard">
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+    <div>
+      <div class="card-title">Panel · Carnicería López</div>
+      <div style="color:var(--muted); font-size:0.88rem;">Hoy atendiste <span class="highlight" id="served-count">8</span> clientes · <span class="highlight" id="queue-count">13</span> esperando</div>
+    </div>
+    <div style="display:flex;gap:0.5rem;">
+      <span style="padding:0.4rem 0.9rem;background:rgba(0,229,160,0.1);border:1px solid var(--accent);border-radius:999px;font-size:0.8rem;color:var(--accent);">● Abierto</span>
+    </div>
+  </div>
+  <div class="dash-grid">
+    <div class="card current-turn">
+      <div class="turn-label">Atendiendo ahora</div>
+      <div class="turn-display" id="current-turn-num">41</div>
+      <div style="color:var(--muted); font-size:0.9rem; margin-bottom:0.5rem;" id="current-client-name">María Fernández</div>
+      <button class="btn-next" onclick="nextTurn()">
+        Siguiente turno ›
+      </button>
+      <button class="btn-outline" style="width:100%;margin-top:0.5rem;padding:0.7rem;border-radius:10px;cursor:pointer;font-family:inherit;font-size:0.88rem;" onclick="markAbsent()">
+        Marcar ausente
+      </button>
+    </div>
+    <div class="card" style="padding:1.25rem;">
+      <div style="font-weight:600; margin-bottom:1rem; font-size:0.9rem; color:var(--muted);">COLA DE ESPERA</div>
+      <div class="queue-list scrollbar-hidden" id="queue-list"></div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+<!-- ════ TOASTS ════ -->
+<div class="toast-container" id="toasts"></div>
+
+<script>
+// ─── NAV ───
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  const tabs = document.querySelectorAll('.tab');
+  const map = { home:0, register:1, client:2, dashboard:3 };
+  tabs[map[id]]?.classList.add('active');
+}
+
+// ─── REGISTER ───
+function slugify(str) {
+  return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+}
+function generateQR() {
+  const name = document.getElementById('biz-name').value || 'Mi Negocio';
+  const slug = slugify(name);
+  document.getElementById('biz-url').textContent = 'turno.ya/' + slug;
+  document.getElementById('register-form-view').style.display = 'none';
+  document.getElementById('register-success-view').style.display = 'block';
+  drawQR(slug);
+}
+function drawQR(text) {
+  const canvas = document.getElementById('qr-canvas');
+  const ctx = canvas.getContext('2d');
+  const size = 160; const cells = 21; const cell = size / cells;
+  ctx.fillStyle = 'white'; ctx.fillRect(0,0,size,size);
+  // Generate pseudo-QR pattern
+  const seed = text.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+  const rand = (i) => ((seed * 9301 + i * 49297 + 233) % 233280) / 233280;
+  ctx.fillStyle = '#111';
+  // Corner markers
+  [[0,0],[0,14],[14,0]].forEach(([r,c])=>{
+    ctx.fillRect(c*cell,r*cell,7*cell,7*cell);
+    ctx.fillStyle='white';ctx.fillRect((c+1)*cell,(r+1)*cell,5*cell,5*cell);
+    ctx.fillStyle='#111';ctx.fillRect((c+2)*cell,(r+2)*cell,3*cell,3*cell);
+    ctx.fillStyle='#111';
+  });
+  for(let r=0;r<cells;r++)for(let c=0;c<cells;c++){
+    const inCorner=((r<8&&c<8)||(r<8&&c>12)||(r>12&&c<8));
+    if(!inCorner&&rand(r*cells+c)>0.45){
+      ctx.fillStyle='#111';ctx.fillRect(c*cell,r*cell,cell-1,cell-1);
+    }
+  }
+}
+
+// ─── CLIENT ───
+let ticketNum = 54;
+async function getTicket() {
+  const name = document.getElementById('client-name').value || 'Cliente';
+  const phone = document.getElementById('client-phone').value;
+  
+  try {
+    await fetch('https://n8n-production-16cd.up.railway.app/webhook/nuevo-turno', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        negocio_id: 'b976fff8-6ab9-4cc6-8c9a-4f6c6f803f19',
+        negocio: 'Carnicería López',
+        nombre: name,
+        telefono: phone,
+        numero: ticketNum,
+        personas_delante: 13,
+        tiempo_estimado: 39
+      })
+    });
+  } catch(e) {
+    console.log('Error:', e)
+  }
+
+  document.getElementById('ticket-number').textContent = ticketNum;
+  document.getElementById('ticket-client-name').textContent = name;
+  document.getElementById('client-form-view').style.display = 'none';
+  document.getElementById('client-ticket-view').style.display = 'block';
+  showToast('whatsapp', '📱 WhatsApp', `¡Listo! Tu turno es el ${ticketNum}. Te avisamos cuando falten 5 personas. Carnicería López 🥩`);
+}
+function simulateNotif() {
+  showToast('whatsapp', '📱 WhatsApp · Carnicería López', '⚠️ Faltan 5 turnos para el tuyo. Andá yendo.');
+  setTimeout(()=>showToast('whatsapp','📱 WhatsApp · Carnicería López','🚨 Faltan 3 turnos. Tenés ~10 minutos para llegar.'),2500);
+  setTimeout(()=>showToast('whatsapp','📱 WhatsApp · Carnicería López','✅ ¡Es tu turno! Turno 54. Dirígite al mostrador.'),5000);
+}
+
+// ─── DASHBOARD ───
+let currentTurn = 41;
+let queue = [
+  { num:41, name:'María Fernández', status:'current' },
+  { num:42, name:'Carlos Rodríguez', status:'near' },
+  { num:43, name:'Ana Gómez', status:'near' },
+  { num:44, name:'Luis Torres', status:'wait' },
+  { num:45, name:'Paula Díaz', status:'wait' },
+  { num:46, name:'Martín Ruiz', status:'wait' },
+  { num:47, name:'Valeria López', status:'wait' },
+  { num:48, name:'Roberto Sosa', status:'wait' },
+  { num:49, name:'Florencia Mora', status:'wait' },
+  { num:50, name:'Diego Herrera', status:'wait' },
+  { num:51, name:'Claudia Vega', status:'wait' },
+  { num:52, name:'Nicolás Paz', status:'wait' },
+  { num:53, name:'Sandra Castro', status:'wait' },
+  { num:54, name:'Juan García', status:'wait' },
+];
+let served = 8;
+function renderQueue() {
+  const list = document.getElementById('queue-list');
+  list.innerHTML = queue.map(item=>`
+    <div class="queue-item ${item.status==='current'?'current':item.status==='near'?'near':''}">
+      <span class="item-num">#${item.num}</span>
+      <span class="item-name">${item.name}</span>
+      <span class="item-status status-${item.status}">${item.status==='current'?'Ahora':item.status==='near'?'Pronto':'Espera'}</span>
+      ${item.status!=='current'?`<button class="btn-absent" onclick="markAbsentNum(${item.num})">✕</button>`:''}
+    </div>`).join('');
+  document.getElementById('current-turn-num').textContent = currentTurn;
+  document.getElementById('current-client-name').textContent = queue[0]?.name || '—';
+  document.getElementById('served-count').textContent = served;
+  document.getElementById('queue-count').textContent = queue.length;
+}
+async function nextTurn() {
+  if(queue.length===0) return;
+  
+  try {
+    await fetch('https://n8n-production-16cd.up.railway.app/webhook/siguiente-turno', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        negocio_id: 'b976fff8-6ab9-4cc6-8c9a-4f6c6f803f19',
+        negocio: 'Carnicería López',
+        turno_actual: currentTurn
+      })
+    });
+  } catch(e) {
+    console.log('Error:', e)
+  }
+
+  const removed = queue.shift();
+  served++;
+  currentTurn++;
+  queue.forEach((item,i)=>{
+    if(i===0) item.status='current';
+    else if(i<=2) item.status='near';
+    else item.status='wait';
+  });
+  if(queue.length>0){
+    const near = queue[1];
+    if(near) showToast('whatsapp','📱 WhatsApp automático',`Faltan 3 turnos para el tuyo (Turno ${near.num}). Andá yendo a Carnicería López.`);
+  }
+  renderQueue();
+}
+function markAbsent() {
+  if(queue.length===0) return;
+  const item = queue.shift();
+  showToast('sms','⚠️ Sistema',`Turno ${item.num} (${item.name}) marcado como ausente.`);
+  nextTurn();
+}
+function markAbsentNum(num) {
+  queue = queue.filter(q=>q.num!==num);
+  showToast('sms','⚠️ Sistema',`Turno ${num} marcado como ausente.`);
+  renderQueue();
+}
+renderQueue();
+
+// ─── TOASTS ───
+function showToast(type, app, msg) {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `
+    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+    <div class="toast-header">
+      <span class="toast-icon">${type==='whatsapp'?'💬':'📩'}</span>
+      <span class="toast-app">${app}</span>
+    </div>
+    <div class="toast-msg">${msg}</div>`;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(()=>el.style.opacity='0',4000);
+  setTimeout(()=>el.remove(),4500);
+}
+</script>
+</body>
+</html>
