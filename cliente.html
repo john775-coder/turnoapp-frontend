@@ -390,7 +390,7 @@ async function obtenerTurno() {
 
   try {
     const { enFila, actual } = await loadStats();
-    const telefonoClean = '549' + telefono.replace(/\D/g, '').slice(-9);
+    const telefonoClean = telefono.replace(/\D/g, '');
     const tiempoEstimado = (enFila + 1) * MINUTOS_POR_TURNO;
 
     await fetch(WEBHOOK_URL, {
